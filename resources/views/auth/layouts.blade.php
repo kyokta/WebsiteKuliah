@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <title>Your Personal CV</title>
+    <title>User</title>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container">
-            <a href="{{ url('/') }}" class="navbar-brand">Personal CV</a>
+            <a href="{{ url('/') }}" class="navbar-brand">Laravel</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toogle navigatioin">
                 <span class="navbar-toggler-icon"></span>

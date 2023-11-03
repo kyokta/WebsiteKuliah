@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginRegisterController;
-
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\LoginRegisterController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 
@@ -27,4 +27,11 @@ Route::controller(LoginRegisterController::class)->group(function () {
     Route::post('/authenticate', 'authenticate')->name('authenticate');
     Route::get('/dashboard', 'dashboard')->name('dashboard');
     Route::post('/logout', 'logout')->name('logout');
+});
+
+Route::controller(UserController::class)->group(function () {
+    Route::get('/user', 'index')->name('user');
+    Route::get('/user/delete/{id}', 'delete')->name('deleteUser');
+    Route::get('/user/edit/{id}', 'edit')->name('editUser');
+    Route::post('/user/update/{id}', 'update')->name('updateUser');
 });
