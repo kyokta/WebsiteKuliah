@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Suppoer\Facades\Storage;
-// use Intervention\Image\Facades\Image as ResizeImage;
 use Image;
 
 class LoginRegisterController extends Controller
@@ -36,29 +35,42 @@ class LoginRegisterController extends Controller
             'photo' => 'image|nullable|max:1999'
         ]);
 
+        $path = null;
+        $pathTumbnail = null;
+        $pathSquare = null;
+
         if ($request->hasFile('photo')) {
             $filenameWithExt = $request->file('photo')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             $extension = $request->file('photo')->getClientOriginalExtension();
             $filenameSimpan = $filename . '_' . time() . '.' . $extension;
-            $path = $request->file('photo')->storeAs('public/photos', $filenameSimpan);
 
-            // $resizePath = 'public/photos/resized/' . $filenameSimpan;
+            $path = $request->file('photo')->storeAs('photos', $filenameSimpan);
 
-            // $image = ResizeImage::make(storage_path('app/public/photos/' . $filenameSimpan))->resize(300, 300, function ($constraint) {
-            //     $constraint->aspectRatio();
-            // });
+            // resize ke thumbnail
+            $thumbnail = Image::make($request->file('photo')->getRealPath())->resize(150, 150);
+            $thumbnailSimpan = time() . '_thumbnail_' . $request->file('photo')->getClientOriginalName(); // penamaan
+            $thumbnail->save(public_path() . '/storage/photos/' . $thumbnailSimpan);
 
-            // Image::make(storage_path('app/' . $path))
-            //     ->resize(200, 200)
-            //     ->save(storage_path('app/' . $resizePath));
+            // resize ke square
+            $square = Image::make($request->file('photo')->getRealPath())->resize(200, 200);
+            $squareSimpan = time() . '_square_' . $request->file('photo')->getClientOriginalName(); // penamaan
+            $square->save(public_path() . '/storage/photos/' . $squareSimpan);
+
+            // Simpan path gambar baru ke dalam array data user
+            $pathTumbnail = 'photos/' . $thumbnailSimpan;
+            $pathSquare = 'photos/' . $squareSimpan;
+        } else {
+            // kalo gada file foto
         }
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'photo' => $path
+            'photo' => $path,
+            'thumbnail' => $pathTumbnail,
+            'square' => $pathSquare
         ]);
         // Mail::to($data->email)->send(new SendEmail($data));
         $credentials = $request->only('email', 'password');

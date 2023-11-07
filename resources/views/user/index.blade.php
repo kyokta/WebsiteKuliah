@@ -10,6 +10,8 @@
                         <th style="text-align: center">Nama</th>
                         <th style="text-align: center">Email</th>
                         <th style="text-align: center">Photo</th>
+                        <th style="text-align: center">Thumbail</th>
+                        <th style="text-align: center">Square</th>
                         <th style="text-align: center">Action</th>
                     </tr>
                 </thead>
@@ -26,7 +28,13 @@
                                 <img src="{{ asset('storage/' . $usr->photo) }}" alt="{{ $usr->name }}" width="100">
                             </td>
                             <td>
-                                <a href="{{ route('editUser', $usr->id) }}" class="btn btn-warning">Edit</a>
+                                <img src="{{ asset('storage/' . $usr->thumbnail) }}" alt="{{ $usr->thumbnail }}">
+                            </td>
+                            <td>
+                                <img src="{{ asset('storage/' . $usr->square) }}" alt="{{ $usr->square }}">
+                            </td>
+                            <td>
+                                {{-- <a href="{{ route('editUser', $usr->id) }}" class="btn btn-warning">Edit</a> --}}
                                 <a href="{{ route('deleteUser', $usr->id) }}" class="btn btn-danger"
                                     onclick="return confirm('Yakin hapus data user?')">Hapus</a>
                             </td>
