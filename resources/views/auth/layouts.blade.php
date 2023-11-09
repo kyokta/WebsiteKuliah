@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('lightbox2-dev/dist/css/lightbox.min.css') }}">
     <title>User</title>
 </head>
 
@@ -30,6 +31,9 @@
                                 class="nav-link {{ request()->is('register') ? 'active' : '' }}">Register</a>
                         </li>
                     @else
+                        <a href="{{ route('user') }}" class="nav-link {{ request()->is('user') ? 'active' : '' }}">User</a>
+                        <a href="{{ route('gallery.index') }}"
+                            class="nav-link {{ request()->is('gallery') ? 'active' : '' }}">Gallery</a>
                         <li class="nav-item dropdown">
                             <a href="" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
@@ -59,6 +63,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
     </script>
+    <script src="{{ asset('lightbox2-dev/dist/js/lightbox-plus-jquery.min.js') }}"></script>
 </body>
 
 </html>

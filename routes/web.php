@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginRegisterController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -35,3 +36,7 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/user/edit/{id}', 'edit')->name('editUser');
     Route::post('/user/update/{id}', 'update')->name('updateUser');
 });
+
+Route::get('/gallery/detail', [GalleryController::class, 'details'])->name('gallery.detail');
+Route::get('/gallery/{id}', [GalleryController::class, 'delete'])->name('gallery.hapus');
+Route::resource('gallery', GalleryController::class);
