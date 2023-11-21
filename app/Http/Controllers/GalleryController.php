@@ -5,35 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Faker\Core\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class GalleryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $data = array(
-            'id' => "post",
-            'menu' => "Gallery",
-            'galleries' => Post::where('picture', '!=', '')->whereNotNull('picture')->orderBy('created_at', 'desc')->paginate(30)
-        );
+        $photos = Http::get('http://127.0.0.1:8001/api/getPhoto');
+        $data['galleries'] = $photos->json();
 
         return view('gallery.index')->with($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('gallery.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -41,39 +30,21 @@ class GalleryController extends Controller
             'description' => 'required',
             'picture' => 'image|nullable|max:1999'
         ]);
-        if ($request->hasFile('picture')) {
-            $filenameWithExt = $request->file('picture')->getClientOriginalName();
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('picture')->getClientOriginalExtension();
-            $basename = uniqid() . time();
-            $smallFilename = "small_{$basename}.{$extension}";
-            $mediumFilename = "medium_{$basename}.{$extension}";
-            $largeFilename = "large_{$basename}.{$extension}";
-            $filenameSimpan = "{$basename}.{$extension}";
-            $path = $request->file('picture')->storeAs('posts_image', $filenameSimpan);
+
+        $response = Http::post('http://127.0.0.1:8001/api/postPhoto', [
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'image' => $request->file('picture')
+        ]);
+
+        $responseData = $response->json();
+        if ($responseData) {
+            return redirect('gallery')->with('success', 'Berhasil menambahkan data baru');
         } else {
-            $filenameSimpan = 'noimage.png';
+            return redirect('gallery')->with('error', 'Gagal menambah data');
         }
-        // dd($request->input());
-        $post = new Post;
-        $post->picture = $filenameSimpan;
-        $post->title = $request->input('title');
-        $post->description = $request->input('description');
-        $post->save();
-        return redirect('gallery')->with('success', 'Berhasil menambahkan data baru');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $gambar = Post::find($id);
@@ -81,9 +52,6 @@ class GalleryController extends Controller
         return view('gallery.edit')->with('gambar', $gambar);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $data = $request->input();
@@ -108,14 +76,6 @@ class GalleryController extends Controller
         $gambar->save();
 
         return redirect('gallery')->with('success', 'Berhasil menambahkan data baru');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 
     public function delete($id)

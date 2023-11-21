@@ -37,6 +37,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/user/update/{id}', 'update')->name('updateUser');
 });
 
+Route::get('/gallery/tambah', [GalleryController::class, 'create'])->name('gallery.tambah');
 Route::get('/gallery/detail', [GalleryController::class, 'details'])->name('gallery.detail');
 Route::get('/gallery/{id}', [GalleryController::class, 'delete'])->name('gallery.hapus');
 Route::resource('gallery', GalleryController::class);
