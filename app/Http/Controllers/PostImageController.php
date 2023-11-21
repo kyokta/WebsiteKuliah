@@ -46,26 +46,32 @@ class PostImageController extends Controller
      */
     public function storeImage(Request $request)
     {
+        $this->validate($request, [
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'picture' => 'image|nullable|max:1999'
+        ]);
+
         $image = $request->only([
             'title',
             'description',
-            'image'
+            'picture'
         ]);
 
-        if (empty($image['title']) && empty($image['description']) && empty($image['image'])) {
+        if (empty($image['title']) && empty($image['description']) && empty($image['picture'])) {
             return new \Exception('Data belum lengkap', 400);
         }
 
-        if ($request->hasFile('image')) {
-            $filenameWithExt = $request->file('image')->getClientOriginalName();
+        if ($request->hasFile('picture')) {
+            $filenameWithExt = $request->file('picture')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
+            $extension = $request->file('picture')->getClientOriginalExtension();
             $basename = uniqid() . time();
             $smallFilename = "small_{$basename}.{$extension}";
             $mediumFilename = "medium_{$basename}.{$extension}";
             $largeFilename = "large_{$basename}.{$extension}";
             $filenameSimpan = "{$basename}.{$extension}";
-            $path = $request->file('image')->storeAs('posts_image', $filenameSimpan);
+            $path = $request->file('picture')->storeAs('posts_image', $filenameSimpan);
         } else {
             $filenameSimpan = 'noimage.png';
         }
@@ -76,10 +82,12 @@ class PostImageController extends Controller
         $post->description = $request->input('description');
         $post->save();
 
-        return response()->json(['message' => 'Data berhasil disimpan', 'success' => true], 200);
+        // return response()->json(['message' => 'Data berhasil disimpan', 'success' => true], 200);
+        return redirect()->route('gallery.index');
     }
 
-    public function getImage(){
+    public function getImage()
+    {
         $data = Post::all();
         $picture = [];
         foreach ($data as $item) {
