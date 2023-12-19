@@ -12,10 +12,9 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $photos = Http::get('http://127.0.0.1:8001/api/getPhoto');
-        $data['galleries'] = $photos->json();
+        $data = Post::all();
 
-        return view('gallery.index')->with($data);
+        return view('gallery.index')->with('galleries', $data);
     }
 
     public function create()
@@ -31,18 +30,37 @@ class GalleryController extends Controller
             'picture' => 'image|nullable|max:1999'
         ]);
 
-        $response = Http::post('http://127.0.0.1:8001/api/postPhoto', [
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'image' => $request->file('picture')
+        $image = $request->only([
+            'title',
+            'description',
+            'picture'
         ]);
 
-        $responseData = $response->json();
-        if ($responseData) {
-            return redirect('gallery')->with('success', 'Berhasil menambahkan data baru');
-        } else {
-            return redirect('gallery')->with('error', 'Gagal menambah data');
+        if (empty($image['title']) && empty($image['description']) && empty($image['picture'])) {
+            return new \Exception('Data belum lengkap', 400);
         }
+
+        if ($request->hasFile('picture')) {
+            $filenameWithExt = $request->file('picture')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('picture')->getClientOriginalExtension();
+            $basename = uniqid() . time();
+            $smallFilename = "small_{$basename}.{$extension}";
+            $mediumFilename = "medium_{$basename}.{$extension}";
+            $largeFilename = "large_{$basename}.{$extension}";
+            $filenameSimpan = "{$basename}.{$extension}";
+            $path = $request->file('picture')->storeAs('posts_image', $filenameSimpan);
+        } else {
+            $filenameSimpan = 'noimage.png';
+        }
+
+        $post = new Post;
+        $post->picture = $filenameSimpan;
+        $post->title = $request->input('title');
+        $post->description = $request->input('description');
+        $post->save();
+        
+        return redirect()->route('gallery.index');
     }
 
     public function edit(string $id)

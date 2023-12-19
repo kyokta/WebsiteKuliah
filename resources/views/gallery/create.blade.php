@@ -7,7 +7,7 @@
                 <div class="card-header">Tambah Gambar</div>
                 <div class="card-body">
                     <div class="row">
-                        <form action="{{ route('postPhotoApi') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('gallery.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3 row">
                                 <label for="title" class="col-md-4 col-form-label text-md-end text-start">Title</label>
@@ -40,6 +40,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <a href="{{ route('gallery.index') }}" class="btn btn-danger">Kembali</a>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>

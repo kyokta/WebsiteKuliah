@@ -3,6 +3,9 @@
 @section('content')
     <div class="row justify-content-center mt-5">
         <div class="col-md-8">
+            <a href="{{ route('gallery.index') }}" class="btn btn-danger">Kembali</a>
+            <br>
+            <br>
             <div class="card">
                 <div class="card-header">Detail Gallery</div>
                 <div class="card-body">

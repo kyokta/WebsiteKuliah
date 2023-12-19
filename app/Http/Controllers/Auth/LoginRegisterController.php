@@ -64,7 +64,7 @@ class LoginRegisterController extends Controller
             // kalo gada file foto
         }
 
-        User::create([
+        $data = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -72,7 +72,7 @@ class LoginRegisterController extends Controller
             'thumbnail' => $pathTumbnail,
             'square' => $pathSquare
         ]);
-        // Mail::to($data->email)->send(new SendEmail($data));
+        Mail::to($data->email)->send(new SendEmail($data));
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);
         $request->session()->regenerate();
